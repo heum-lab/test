@@ -16,6 +16,7 @@ import {
 import { useAgencyOptions, useSellerOptions } from '@/hooks/useOptions';
 import { ITEM_STATUSES, PLACE_CATEGORIES } from '@/lib/constants';
 import { placeSchema, type PlaceInput } from '@/lib/validations/place';
+import { useSession } from '@/lib/auth/session-context';
 
 type Props = {
   defaultValues?: Partial<PlaceInput>;
@@ -42,11 +43,19 @@ export function PlaceForm({
   submitting,
   submitLabel = '저장',
 }: Props) {
+  const session = useSession();
+  const lockAgency = session.role === 'agency' || session.role === 'seller';
+  const lockSeller = session.role === 'seller';
+  const presetAgencyId = lockAgency ? session.agencyId ?? undefined : undefined;
+  const presetSellerId = lockSeller ? session.sellerId ?? undefined : undefined;
+
   const form = useForm<PlaceInput>({
     resolver: zodResolver(placeSchema),
     defaultValues: {
       status: '대기',
       ad_type: '',
+      ...(presetAgencyId !== undefined ? { agency_id: presetAgencyId } : {}),
+      ...(presetSellerId !== undefined ? { seller_id: presetSellerId } : {}),
       ...defaultValues,
     },
   });
@@ -69,8 +78,9 @@ export function PlaceForm({
             value={agencyId ? String(agencyId) : ''}
             onValueChange={(v) => {
               form.setValue('agency_id', Number(v));
-              form.setValue('seller_id', 0 as unknown as number);
+              if (!lockSeller) form.setValue('seller_id', 0 as unknown as number);
             }}
+            disabled={lockAgency}
           >
             <SelectTrigger>
               <SelectValue placeholder="총판 선택" />
@@ -88,6 +98,7 @@ export function PlaceForm({
           <Select
             value={form.watch('seller_id') ? String(form.watch('seller_id')) : ''}
             onValueChange={(v) => form.setValue('seller_id', Number(v))}
+            disabled={lockSeller}
           >
             <SelectTrigger>
               <SelectValue placeholder="대행사 선택" />

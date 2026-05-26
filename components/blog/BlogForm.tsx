@@ -17,6 +17,7 @@ import { FileUploader } from '@/components/common/FileUploader';
 import { useAgencyOptions, useSellerOptions } from '@/hooks/useOptions';
 import { BLOG_AD_TYPES, BLOG_STATUSES } from '@/lib/constants';
 import { blogSchema, type BlogInput } from '@/lib/validations/blog';
+import { useSession } from '@/lib/auth/session-context';
 
 type Props = {
   defaultValues?: Partial<BlogInput>;
@@ -33,12 +34,20 @@ export function BlogForm({
   submitting,
   submitLabel = '저장',
 }: Props) {
+  const session = useSession();
+  const lockAgency = session.role === 'agency' || session.role === 'seller';
+  const lockSeller = session.role === 'seller';
+  const presetAgencyId = lockAgency ? session.agencyId ?? undefined : undefined;
+  const presetSellerId = lockSeller ? session.sellerId ?? undefined : undefined;
+
   const form = useForm<BlogInput>({
     resolver: zodResolver(blogSchema),
     defaultValues: {
       status: '대기',
       daily_publish_count: 0,
       total_publish_count: 0,
+      ...(presetAgencyId !== undefined ? { agency_id: presetAgencyId } : {}),
+      ...(presetSellerId !== undefined ? { seller_id: presetSellerId } : {}),
       ...defaultValues,
     },
   });
@@ -55,8 +64,9 @@ export function BlogForm({
             value={agencyId ? String(agencyId) : ''}
             onValueChange={(v) => {
               form.setValue('agency_id', Number(v));
-              form.setValue('seller_id', 0 as unknown as number);
+              if (!lockSeller) form.setValue('seller_id', 0 as unknown as number);
             }}
+            disabled={lockAgency}
           >
             <SelectTrigger>
               <SelectValue placeholder="총판 선택" />
@@ -74,6 +84,7 @@ export function BlogForm({
           <Select
             value={form.watch('seller_id') ? String(form.watch('seller_id')) : ''}
             onValueChange={(v) => form.setValue('seller_id', Number(v))}
+            disabled={lockSeller}
           >
             <SelectTrigger>
               <SelectValue placeholder="대행사 선택" />
