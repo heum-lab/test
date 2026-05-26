@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getSession } from '@/lib/auth/session';
 import { autoCompleteSchema } from '@/lib/validations/auto-complete';
 import type { ApiResponse } from '@/types';
 
@@ -7,6 +8,13 @@ const ALLOWED_DATE_COLS = ['expose_start_date', 'guarantee_end_date'];
 
 export async function GET(request: Request) {
   const supabase = await createClient();
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json<ApiResponse<never>>(
+      { data: null, error: '로그인이 필요합니다.' },
+      { status: 401 },
+    );
+  }
   const { searchParams } = new URL(request.url);
 
   const agencyId = searchParams.get('agency_id');
@@ -27,6 +35,12 @@ export async function GET(request: Request) {
   let query = supabase
     .from('auto_complete_items')
     .select('*, agencies(name), sellers(name, seller_code)', { count: 'exact' });
+
+  if (session.role === 'agency' && session.agencyId) {
+    query = query.eq('agency_id', session.agencyId);
+  } else if (session.role === 'seller' && session.sellerId) {
+    query = query.eq('seller_id', session.sellerId);
+  }
 
   if (agencyId && agencyId !== 'all') query = query.eq('agency_id', Number(agencyId));
   if (sellerId && sellerId !== 'all') query = query.eq('seller_id', Number(sellerId));
