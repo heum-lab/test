@@ -35,7 +35,14 @@ export async function GET(request: Request) {
     .select('*, agencies(name), sellers(name, seller_code)', { count: 'exact' });
 
   if (session.role === 'agency' && session.agencyId) {
-    query = query.eq('agency_id', session.agencyId);
+    const { data: ownSellers } = await supabase
+      .from('sellers')
+      .select('id')
+      .eq('agency_id', session.agencyId);
+    const sellerIds = (ownSellers ?? []).map((s) => s.id);
+    const conditions = [`agency_id.eq.${session.agencyId}`];
+    if (sellerIds.length > 0) conditions.push(`seller_id.in.(${sellerIds.join(',')})`);
+    query = query.or(conditions.join(','));
   } else if (session.role === 'seller' && session.sellerId) {
     query = query.eq('seller_id', session.sellerId);
   }
