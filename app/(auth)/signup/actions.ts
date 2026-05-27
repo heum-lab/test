@@ -121,6 +121,7 @@ export async function signupAction(_prev: SignupState, formData: FormData): Prom
       user_metadata: {
         role: 'seller',
         seller_id: String(seller.id),
+        agency_id: String(agency_id),
         name,
       },
     });

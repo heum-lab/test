@@ -29,6 +29,7 @@ export const getSession = cache(async (): Promise<Session | null> => {
   if (!profile) return null;
 
   let name: string | null = null;
+  let agencyId: number | null = profile.agency_id;
   if (profile.role === 'agency' && profile.agency_id) {
     const { data } = await supabase
       .from('agencies')
@@ -39,17 +40,19 @@ export const getSession = cache(async (): Promise<Session | null> => {
   } else if (profile.role === 'seller' && profile.seller_id) {
     const { data } = await supabase
       .from('sellers')
-      .select('name')
+      .select('name, agency_id')
       .eq('id', profile.seller_id)
       .maybeSingle();
     name = data?.name ?? null;
+    // 대행사의 상위 총판: profile.agency_id 가 비어 있으면 seller 레코드에서 유도
+    if (agencyId == null) agencyId = data?.agency_id ?? null;
   }
 
   return {
     userId: user.id,
     email: user.email ?? '',
     role: profile.role as UserRole,
-    agencyId: profile.agency_id,
+    agencyId,
     sellerId: profile.seller_id,
     name,
   };

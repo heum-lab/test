@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/select';
 import { DateRangePicker } from '@/components/common/DateRangePicker';
 import { QuickDateSelector } from '@/components/common/QuickDateSelector';
-import { useAgencyOptions, useSellerOptions } from '@/hooks/useOptions';
+import { useSellerOptions } from '@/hooks/useOptions';
+import { useScopedAgencyFilter } from '@/hooks/useScopedAgencyFilter';
 import {
   DATE_TYPE_OPTIONS,
   ITEM_STATUSES,
@@ -48,7 +49,7 @@ export function SearchFilter({
   onReset,
   searchPlaceholder = '키워드 / 대행사명',
 }: Props) {
-  const { data: agencies = [] } = useAgencyOptions();
+  const { agencies, restricted } = useScopedAgencyFilter(value, onChange);
   const { data: sellers = [] } = useSellerOptions(
     value.agency_id !== 'all' ? value.agency_id : undefined,
   );
@@ -58,12 +59,16 @@ export function SearchFilter({
   return (
     <div className="mb-4 space-y-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <Select value={value.agency_id} onValueChange={(v) => set({ agency_id: v, seller_id: 'all' })}>
+        <Select
+          value={value.agency_id}
+          onValueChange={(v) => set({ agency_id: v, seller_id: 'all' })}
+          disabled={restricted}
+        >
           <SelectTrigger className="w-44">
             <SelectValue placeholder="총판" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">전체 총판</SelectItem>
+            {!restricted && <SelectItem value="all">전체 총판</SelectItem>}
             {agencies.map((a) => (
               <SelectItem key={a.id} value={String(a.id)}>
                 {a.name}

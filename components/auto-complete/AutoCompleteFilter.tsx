@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/select';
 import { DateRangePicker } from '@/components/common/DateRangePicker';
 import { QuickDateSelector } from '@/components/common/QuickDateSelector';
-import { useAgencyOptions, useSellerOptions } from '@/hooks/useOptions';
+import { useSellerOptions } from '@/hooks/useOptions';
+import { useScopedAgencyFilter } from '@/hooks/useScopedAgencyFilter';
 import { ITEM_STATUSES, PAGE_SIZE_OPTIONS, type QuickDateKey } from '@/lib/constants';
 
 const DATE_TYPE_OPTIONS = [
@@ -40,7 +41,7 @@ type Props = {
 };
 
 export function AutoCompleteFilter({ value, onChange, onApply, onReset }: Props) {
-  const { data: agencies = [] } = useAgencyOptions();
+  const { agencies, restricted } = useScopedAgencyFilter(value, onChange);
   const { data: sellers = [] } = useSellerOptions(
     value.agency_id !== 'all' ? value.agency_id : undefined,
   );
@@ -53,12 +54,13 @@ export function AutoCompleteFilter({ value, onChange, onApply, onReset }: Props)
         <Select
           value={value.agency_id}
           onValueChange={(v) => set({ agency_id: v, seller_id: 'all' })}
+          disabled={restricted}
         >
           <SelectTrigger className="w-44">
             <SelectValue placeholder="총판" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">전체 총판</SelectItem>
+            {!restricted && <SelectItem value="all">전체 총판</SelectItem>}
             {agencies.map((a) => (
               <SelectItem key={a.id} value={String(a.id)}>
                 {a.name}
