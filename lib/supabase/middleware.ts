@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Database } from '@/types/supabase';
 
-const PUBLIC_PATHS = ['/login', '/signup', '/api/auth'];
+const PUBLIC_PATHS = ['/login', '/signup', '/api/auth', '/api/cron'];
 const SUPER_ADMIN_ONLY = ['/admin/agency'];
 
 export async function updateSession(request: NextRequest) {
