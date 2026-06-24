@@ -63,6 +63,7 @@ export function PlaceModal({ open, onOpenChange, item }: Props) {
                   agency_id: item.agency_id ?? undefined,
                   seller_id: item.seller_id ?? undefined,
                   category: (item.category as PlaceInput['category']) ?? undefined,
+                  logic: (item.logic as PlaceInput['logic']) ?? undefined,
                   ad_type: item.ad_type as PlaceInput['ad_type'],
                   traffic_count: item.traffic_count ?? undefined,
                   payment_amount: item.payment_amount ?? undefined,

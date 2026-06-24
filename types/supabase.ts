@@ -86,6 +86,7 @@ type PlaceRow = {
   ad_type: string;
   search_keyword: string;
   category: string | null;
+  logic: string | null;
   place_url: string;
   traffic_count: number | null;
   payment_amount: number | null;
@@ -112,6 +113,7 @@ type PlaceInsert = {
   ad_type: string;
   search_keyword: string;
   category?: string | null;
+  logic?: string | null;
   place_url: string;
   traffic_count?: number | null;
   payment_amount?: number | null;

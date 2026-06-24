@@ -223,6 +223,7 @@ export function KakaoMapPage() {
                     agency_id: editing.agency_id ?? undefined,
                     seller_id: editing.seller_id ?? undefined,
                     category: (editing.category as PlaceInput['category']) ?? undefined,
+                    logic: (editing.logic as PlaceInput['logic']) ?? undefined,
                     ad_type: editing.ad_type as PlaceInput['ad_type'],
                     traffic_count: editing.traffic_count ?? undefined,
                     payment_amount: editing.payment_amount ?? undefined,

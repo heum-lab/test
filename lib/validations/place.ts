@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ITEM_STATUSES, PLACE_CATEGORIES } from '@/lib/constants';
+import { ITEM_STATUSES, PLACE_CATEGORIES, PLACE_LOGICS } from '@/lib/constants';
 
 const optionalText = z
   .string()
@@ -23,6 +23,10 @@ export const placeSchema = z.object({
     .transform((v) => v ?? ''),
   search_keyword: z.string().trim().min(1, '검색 키워드를 입력해 주세요.'),
   category: z.enum(PLACE_CATEGORIES).optional(),
+  logic: z.enum(PLACE_LOGICS, {
+    required_error: '로직을 선택해 주세요.',
+    invalid_type_error: '로직을 선택해 주세요.',
+  }),
   place_url: z
     .string()
     .trim()

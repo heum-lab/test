@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useAgencyOptions, useSellerOptions } from '@/hooks/useOptions';
-import { ITEM_STATUSES, PLACE_CATEGORIES } from '@/lib/constants';
+import { ITEM_STATUSES, PLACE_CATEGORIES, PLACE_LOGICS } from '@/lib/constants';
 import { placeSchema, type PlaceInput } from '@/lib/validations/place';
 import { useSession } from '@/lib/auth/session-context';
 
@@ -123,7 +123,7 @@ export function PlaceForm({
         </Field>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <Field label="업종 카테고리">
           <Select
             value={form.watch('category') ?? ''}
@@ -136,6 +136,23 @@ export function PlaceForm({
               {PLACE_CATEGORIES.map((c) => (
                 <SelectItem key={c} value={c}>
                   {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="로직 *" error={form.formState.errors.logic?.message}>
+          <Select
+            value={form.watch('logic') ?? ''}
+            onValueChange={(v) => form.setValue('logic', v as (typeof PLACE_LOGICS)[number])}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="선택" />
+            </SelectTrigger>
+            <SelectContent>
+              {PLACE_LOGICS.map((l) => (
+                <SelectItem key={l} value={l}>
+                  {l}
                 </SelectItem>
               ))}
             </SelectContent>

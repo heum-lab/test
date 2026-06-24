@@ -44,6 +44,7 @@ const PLACE_COLUMNS: ExcelColumn[] = [
   { header: '광고상품타입', field: 'ad_type', required: true },
   { header: '검색키워드', field: 'search_keyword', required: true },
   { header: '카테고리', field: 'category' },
+  { header: '로직', field: 'logic', required: true },
   { header: '플레이스URL', field: 'place_url', required: true },
   { header: '유입수', field: 'traffic_count', type: 'number' },
   { header: '입금액', field: 'payment_amount', type: 'number' },

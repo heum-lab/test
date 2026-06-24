@@ -61,6 +61,7 @@ export function PlaceTable({
           <TableHead>상점명</TableHead>
           <TableHead>메인키워드</TableHead>
           <TableHead>검색키워드</TableHead>
+          <TableHead>로직</TableHead>
           <TableHead>주문일</TableHead>
           <TableHead>시작일</TableHead>
           <TableHead>종료일</TableHead>
@@ -91,6 +92,7 @@ export function PlaceTable({
               <TableCell className="font-medium">{item.store_name}</TableCell>
               <TableCell>{item.main_keyword}</TableCell>
               <TableCell>{item.search_keyword}</TableCell>
+              <TableCell>{item.logic ?? '-'}</TableCell>
               <TableCell>{item.order_date ?? '-'}</TableCell>
               <TableCell>{item.start_date}</TableCell>
               <TableCell>{item.end_date}</TableCell>

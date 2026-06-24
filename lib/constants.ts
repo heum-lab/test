@@ -80,6 +80,10 @@ export const PLACE_CATEGORIES = [
   '기타',
 ] as const;
 
+// 플레이스/카카오맵 작업 로직
+export const PLACE_LOGICS = ['로직1번', '로직2번'] as const;
+export type PlaceLogic = (typeof PLACE_LOGICS)[number];
+
 // 블로그 (Phase 3)
 export const BLOG_AD_TYPES = [
   '정보성',
