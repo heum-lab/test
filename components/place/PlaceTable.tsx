@@ -1,6 +1,6 @@
 'use client';
 
-import { differenceInDays, parseISO } from 'date-fns';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -124,10 +124,10 @@ export function PlaceTable({
       </TableHeader>
       <TableBody>
         {items.map((item, idx) => {
-          const runningDays =
-            item.start_date && item.end_date
-              ? differenceInDays(parseISO(item.end_date), parseISO(item.start_date)) + 1
-              : '-';
+          // 종료일이 다가올수록 줄어드는 남은 구동일 (오늘 포함, 시작일엔 총 구동기간과 동일)
+          const remainingDays = item.end_date
+            ? Math.max(0, differenceInCalendarDays(parseISO(item.end_date), new Date()) + 1)
+            : null;
           return (
             <TableRow key={item.id} data-state={selectedIds.includes(item.id) ? 'selected' : undefined}>
               <TableCell>
@@ -146,7 +146,7 @@ export function PlaceTable({
               <TableCell>{item.order_date ?? '-'}</TableCell>
               <TableCell>{item.start_date}</TableCell>
               <TableCell>{item.end_date}</TableCell>
-              <TableCell>{runningDays}</TableCell>
+              <TableCell className={remainingDays !== null && remainingDays <= 2 ? 'text-red-500 font-medium' : undefined}>{remainingDays ?? '-'}</TableCell>
               <TableCell>{item.traffic_count ?? '-'}</TableCell>
               <TableCell>{item.payment_date ?? '-'}</TableCell>
               <TableCell>

@@ -17,7 +17,9 @@ const SORT_COLUMNS: Record<string, string> = {
   order_date: 'order_date',
   start_date: 'start_date',
   end_date: 'end_date',
-  running_days: 'running_days',
+  // 구동일은 화면상 "남은 일수(종료일−오늘)"로 표시 → 모든 행에 오늘이 동일하므로
+  // 남은 일수 정렬은 종료일 정렬과 동일(오름차순 = 종료 임박/남은 일수 적은 순)
+  running_days: 'end_date',
   traffic_count: 'traffic_count',
   payment_date: 'payment_date',
   status: 'status',
