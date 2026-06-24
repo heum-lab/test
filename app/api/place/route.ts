@@ -4,6 +4,25 @@ import { getSession } from '@/lib/auth/session';
 import { placeSchema } from '@/lib/validations/place';
 import type { ApiResponse } from '@/types';
 
+// 정렬 허용 컬럼: UI 키 → PostgREST order 식
+// (총판/대행사는 연관 테이블 이름 기준 정렬)
+const SORT_COLUMNS: Record<string, string> = {
+  id: 'id',
+  agency: 'agencies(name)',
+  seller: 'sellers(name)',
+  store_name: 'store_name',
+  main_keyword: 'main_keyword',
+  search_keyword: 'search_keyword',
+  logic: 'logic',
+  order_date: 'order_date',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  running_days: 'running_days',
+  traffic_count: 'traffic_count',
+  payment_date: 'payment_date',
+  status: 'status',
+};
+
 export async function GET(request: Request) {
   const supabase = await createClient();
   const session = await getSession();
@@ -24,7 +43,8 @@ export async function GET(request: Request) {
   const search = searchParams.get('search')?.trim();
   const page = Math.max(1, Number(searchParams.get('page') ?? '1'));
   const pageSize = Math.min(150, Math.max(1, Number(searchParams.get('page_size') ?? '50')));
-  const sort = searchParams.get('sort') ?? 'start_date';
+  const sortKey = searchParams.get('sort') ?? 'start_date';
+  const orderExpr = SORT_COLUMNS[sortKey] ?? 'start_date';
   const sortDir = (searchParams.get('sort_dir') ?? 'desc') === 'asc' ? 'asc' : 'desc';
 
   const from = (page - 1) * pageSize;
@@ -64,7 +84,7 @@ export async function GET(request: Request) {
     );
   }
 
-  query = query.order(sort, { ascending: sortDir === 'asc' }).range(from, to);
+  query = query.order(orderExpr, { ascending: sortDir === 'asc' }).range(from, to);
 
   const { data, error, count } = await query;
 

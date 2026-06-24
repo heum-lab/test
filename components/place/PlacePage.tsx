@@ -36,6 +36,8 @@ export function PlacePage() {
   const [filter, setFilter] = useState<FilterState>(defaultFilter);
   const [applied, setApplied] = useState<FilterState>(defaultFilter);
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState('start_date');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<PlaceItem | null>(null);
@@ -51,8 +53,10 @@ export function PlacePage() {
       search: applied.search,
       page,
       page_size: applied.page_size,
+      sort,
+      sort_dir: sortDir,
     }),
-    [applied, page],
+    [applied, page, sort, sortDir],
   );
 
   const { data, isLoading } = usePlaceList(queryParams);
@@ -71,6 +75,17 @@ export function PlacePage() {
   const handleReset = () => {
     setFilter(defaultFilter);
     setApplied(defaultFilter);
+    setPage(1);
+    setSelectedIds([]);
+  };
+
+  const handleSort = (key: string) => {
+    if (sort === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSort(key);
+      setSortDir('asc');
+    }
     setPage(1);
     setSelectedIds([]);
   };
@@ -149,6 +164,9 @@ export function PlacePage() {
           items={items}
           isLoading={isLoading}
           selectedIds={selectedIds}
+          sort={sort}
+          sortDir={sortDir}
+          onSort={handleSort}
           onToggleSelect={toggleSelect}
           onToggleSelectAll={toggleSelectAll}
           onEdit={(item) => {
