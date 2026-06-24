@@ -36,7 +36,8 @@ export function PlacePage() {
   const [filter, setFilter] = useState<FilterState>(defaultFilter);
   const [applied, setApplied] = useState<FilterState>(defaultFilter);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('start_date');
+  // 기본 정렬: 최신 등록(id 내림차순)이 맨 위
+  const [sort, setSort] = useState('id');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
