@@ -64,7 +64,7 @@ export function NaverShoppingTable({
           <TableHead>주문일</TableHead>
           <TableHead>시작일</TableHead>
           <TableHead>종료일</TableHead>
-          <TableHead>구동일</TableHead>
+          <TableHead>잔여일</TableHead>
           <TableHead>유입수</TableHead>
           <TableHead>입금일</TableHead>
           <TableHead>순위(최초/현재/어제)</TableHead>

@@ -115,7 +115,7 @@ export function PlaceTable({
           <SortableHead label="주문일" sortKey="order_date" sort={sort} sortDir={sortDir} onSort={onSort} />
           <SortableHead label="시작일" sortKey="start_date" sort={sort} sortDir={sortDir} onSort={onSort} />
           <SortableHead label="종료일" sortKey="end_date" sort={sort} sortDir={sortDir} onSort={onSort} />
-          <SortableHead label="구동일" sortKey="running_days" sort={sort} sortDir={sortDir} onSort={onSort} />
+          <SortableHead label="잔여일" sortKey="running_days" sort={sort} sortDir={sortDir} onSort={onSort} />
           <SortableHead label="유입수" sortKey="traffic_count" sort={sort} sortDir={sortDir} onSort={onSort} />
           <SortableHead label="입금일" sortKey="payment_date" sort={sort} sortDir={sortDir} onSort={onSort} />
           <SortableHead label="상태" sortKey="status" sort={sort} sortDir={sortDir} onSort={onSort} />
