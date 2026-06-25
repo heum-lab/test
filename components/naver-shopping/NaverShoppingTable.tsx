@@ -74,9 +74,9 @@ export function NaverShoppingTable({
       </TableHeader>
       <TableBody>
         {items.map((item, idx) => {
-          // 종료일이 다가올수록 줄어드는 남은 구동일 (오늘 포함, 시작일엔 총 구동기간과 동일)
+          // 종료일이 다가올수록 줄어드는 남은 잔여일 (오늘 미포함: 종료일 − 오늘)
           const remainingDays = item.end_date
-            ? Math.max(0, differenceInCalendarDays(parseISO(item.end_date), new Date()) + 1)
+            ? Math.max(0, differenceInCalendarDays(parseISO(item.end_date), new Date()))
             : null;
           return (
             <TableRow key={item.id} data-state={selectedIds.includes(item.id) ? 'selected' : undefined}>
