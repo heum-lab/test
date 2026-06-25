@@ -124,9 +124,11 @@ export function PlaceTable({
       </TableHeader>
       <TableBody>
         {items.map((item, idx) => {
-          // 종료일이 다가올수록 줄어드는 남은 잔여일 (오늘 미포함: 종료일 − 오늘)
+          // 잔여일: 시작 전이면 전체 기간(종료일−시작일+1), 시작 후면 오늘 미포함 남은 일수(종료일−오늘)
           const remainingDays = item.end_date
-            ? Math.max(0, differenceInCalendarDays(parseISO(item.end_date), new Date()))
+            ? item.start_date && differenceInCalendarDays(parseISO(item.start_date), new Date()) > 0
+              ? Math.max(0, differenceInCalendarDays(parseISO(item.end_date), parseISO(item.start_date)) + 1)
+              : Math.max(0, differenceInCalendarDays(parseISO(item.end_date), new Date()))
             : null;
           return (
             <TableRow key={item.id} data-state={selectedIds.includes(item.id) ? 'selected' : undefined}>
